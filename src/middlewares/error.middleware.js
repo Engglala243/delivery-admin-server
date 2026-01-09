@@ -5,7 +5,14 @@ const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
 
-  logger.error(err);
+  // Log error with request context
+  logger.logError('API Error occurred', err, {
+    method: req.method,
+    url: req.originalUrl,
+    ip: req.ip,
+    userAgent: req.get('User-Agent'),
+    statusCode: error.statusCode || 500
+  });
 
   if (err.name === 'CastError') {
     const message = 'Resource not found';
