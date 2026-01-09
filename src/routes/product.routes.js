@@ -1,6 +1,7 @@
 const express = require('express');
-const { createProduct, getProducts } = require('../controllers/product.controller');
+const { createProduct, getProducts, getProductById, updateProduct, deleteProduct } = require('../controllers/product.controller');
 const auth = require('../middlewares/auth.middleware');
+const upload = require('../middlewares/upload.middleware');
 
 const router = express.Router();
 
@@ -87,7 +88,10 @@ const router = express.Router();
  *                         type: boolean
  */
 
-router.post('/', auth, createProduct);
+router.post('/', auth, upload.array('images', 5), createProduct);
 router.get('/', getProducts);
+router.get('/:id', getProductById);
+router.put('/:id', auth, upload.array('images', 5), updateProduct);
+router.delete('/:id', auth, deleteProduct);
 
 module.exports = router;

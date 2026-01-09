@@ -1,5 +1,6 @@
 const express = require('express');
 const adminRoutes = require('./admin.routes');
+const authRoutes = require('./auth.routes');
 const dashboardRoutes = require('./dashboard.routes');
 const categoryRoutes = require('./category.routes');
 const subCategoryRoutes = require('./subCategory.routes');
@@ -11,6 +12,7 @@ const orderRoutes = require('./order.routes');
 const router = express.Router();
 
 router.use('/admin', adminRoutes);
+router.use('/auth', authRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/subcategories', subCategoryRoutes);

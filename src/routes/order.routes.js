@@ -1,5 +1,6 @@
 const express = require('express');
-const { getOrders, updateOrderStatus } = require('../controllers/order.controller');
+const { createOrder, getOrders, updateOrderStatus, getUserOrders } = require('../controllers/order.controller');
+const userAuth = require('../middlewares/userAuth.middleware');
 const auth = require('../middlewares/auth.middleware');
 
 const router = express.Router();
@@ -101,7 +102,9 @@ const router = express.Router();
  *         description: Unauthorized
  */
 
+router.post('/', userAuth, createOrder);
 router.get('/', auth, getOrders);
+router.get('/user', userAuth, getUserOrders);
 router.put('/:id/status', auth, updateOrderStatus);
 
 module.exports = router;
