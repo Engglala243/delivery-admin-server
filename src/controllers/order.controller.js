@@ -6,6 +6,9 @@ const asyncHandler = require('../utils/asyncHandler');
 const createOrder = asyncHandler(async (req, res) => {
   const { items, totalAmount, deliveryAddress, paymentMethod } = req.body;
   
+  console.log('Creating order for user:', req.user.userId);
+  console.log('Order data:', { items, totalAmount, deliveryAddress, paymentMethod });
+  
   const orderNumber = 'ORD' + Date.now();
   
   const order = await Order.create({
@@ -18,6 +21,8 @@ const createOrder = asyncHandler(async (req, res) => {
     status: 'pending'
   });
   
+  console.log('Order created with ID:', order._id);
+  
   const populatedOrder = await Order.findById(order._id)
     .populate('user', 'name email')
     .populate('items.product', 'name price');
@@ -26,9 +31,16 @@ const createOrder = asyncHandler(async (req, res) => {
 });
 
 const getUserOrders = asyncHandler(async (req, res) => {
+  console.log('getUserOrders called for user:', req.user.userId);
+  console.log('User object:', req.user);
+  
   const orders = await Order.find({ user: req.user.userId })
     .populate('items.product', 'name price images')
     .sort({ createdAt: -1 });
+    
+  console.log('Found orders count:', orders.length);
+  console.log('Orders:', orders);
+  
   res.json(new ApiResponse(200, orders, 'User orders retrieved'));
 });
 
@@ -51,4 +63,24 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   res.json(new ApiResponse(200, order, 'Order status updated'));
 });
 
-module.exports = { createOrder, getUserOrders, getOrders, updateOrderStatus };
+const getOrderById = asyncHandler(async (req, res) => {
+  console.log('getOrderById called for order:', req.params.id);
+  console.log('User:', req.user.userId);
+  
+  const order = await Order.findOne({ 
+    _id: req.params.id, 
+    user: req.user.userId 
+  })
+    .populate('user', 'name email')
+    .populate('items.product', 'name price images')
+    .populate('driver', 'name phone');
+    
+  if (!order) {
+    throw new ApiError(404, 'Order not found');
+  }
+  
+  console.log('Found order:', order);
+  res.json(new ApiResponse(200, order, 'Order retrieved'));
+});
+
+module.exports = { createOrder, getUserOrders, getOrders, updateOrderStatus, getOrderById };

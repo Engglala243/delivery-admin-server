@@ -46,6 +46,11 @@ const orderSchema = new mongoose.Schema({
     state: String,
     zipCode: String
   },
+  paymentMethod: {
+    type: String,
+    enum: ['cash', 'card'],
+    default: 'cash'
+  },
   deliveredAt: Date
 }, {
   timestamps: true

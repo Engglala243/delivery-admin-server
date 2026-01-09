@@ -1,5 +1,5 @@
 const express = require('express');
-const { createOrder, getOrders, updateOrderStatus, getUserOrders } = require('../controllers/order.controller');
+const { createOrder, getOrders, updateOrderStatus, getUserOrders, getOrderById } = require('../controllers/order.controller');
 const userAuth = require('../middlewares/userAuth.middleware');
 const auth = require('../middlewares/auth.middleware');
 
@@ -105,6 +105,7 @@ const router = express.Router();
 router.post('/', userAuth, createOrder);
 router.get('/', auth, getOrders);
 router.get('/user', userAuth, getUserOrders);
+router.get('/:id', userAuth, getOrderById);
 router.put('/:id/status', auth, updateOrderStatus);
 
 module.exports = router;
